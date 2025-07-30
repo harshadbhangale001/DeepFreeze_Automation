@@ -1,11 +1,13 @@
 package deepfreeze;
 
+import java.time.Duration;
 import java.util.HashMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
@@ -16,15 +18,18 @@ public class df_login {
 	
 	
 	public static WebDriver driver;
+	public static WebDriverWait wait;
 	//String username="harshad.bhangale317@gmail.com";
 	//String password="Aloha@123";
 	
 	@BeforeSuite 
 	public void login()
 	{
+		
+        
         //Set download path
         String downloadFilepath = "C:\\Downloads";
-
+        
         //Chrome preferences
         HashMap<String, Object> chromePrefs = new HashMap<>();
         chromePrefs.put("profile.default_content_settings.popups", 0);
@@ -39,10 +44,13 @@ public class df_login {
         options.addArguments("--safebrowsing-disable-download-protection");
         options.addArguments("--no-sandbox");
 
-        // Initialize Chrome driver
+        
+     // Initialize Chrome driver
         driver = new ChromeDriver(options);
- 
-		//System.out.println("In login(), driver = " + driver);
+        wait=new WebDriverWait(driver, Duration.ofSeconds(15));
+        
+        
+		//DeepFeeze Login
 		driver.manage().window().maximize();
 		driver.get(ConfigReader.get("url"));
 		driver.findElement(By.xpath("//input[@id='txtUserName']")).sendKeys(ConfigReader.get("username"));
@@ -57,13 +65,14 @@ public class df_login {
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
 	}
 	
-	@AfterSuite
-	void logout()
-	{
-		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
-		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
-		driver.quit();
-	}
+//	@AfterSuite
+//	void logout()
+//	{
+		//DeepFreeze Logout
+//		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
+//		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
+//		driver.quit();
+//	}
 	
 	
 }

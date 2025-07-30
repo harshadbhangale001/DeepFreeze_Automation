@@ -5,6 +5,7 @@
     <classes>
   	  <class name="deepfreeze.df_login"/>
       <!-- <class name="deepfreeze.agent_download"/> -->
+      <class name="deepfreeze.onelogin"/>
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
