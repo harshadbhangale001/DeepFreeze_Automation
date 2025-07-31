@@ -10,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-
 import utils.ConfigReader;
 
 
@@ -24,9 +23,8 @@ public class df_login {
 	
 	@BeforeSuite 
 	public void login()
-	{
-		
-        
+	{        
+   
         //Set download path
         String downloadFilepath = "C:\\Downloads";
         
@@ -40,6 +38,7 @@ public class df_login {
 
         //Chrome options
         ChromeOptions options = new ChromeOptions();
+        //options.addArguments("--incognito");
         options.setExperimentalOption("prefs", chromePrefs);
         options.addArguments("--safebrowsing-disable-download-protection");
         options.addArguments("--no-sandbox");
@@ -65,14 +64,14 @@ public class df_login {
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
 	}
 	
-//	@AfterSuite
-//	void logout()
-//	{
+	@AfterSuite
+	void logout()
+	{
 		//DeepFreeze Logout
-//		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
-//		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
-//		driver.quit();
-//	}
+		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
+		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
+		driver.quit();
+	}
 	
 	
 }

@@ -3,9 +3,15 @@
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Test(failed)">
     <classes>
+      <class name="deepfreeze.df_login">
+        <methods>
+          <include name="logout"/>
+        </methods>
+      </class> <!-- deepfreeze.df_login -->
       <class name="deepfreeze.onelogin">
         <methods>
           <include name="tempmail"/>
+          <include name="logout"/>
           <include name="login"/>
         </methods>
       </class> <!-- deepfreeze.onelogin -->

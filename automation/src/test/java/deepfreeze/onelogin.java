@@ -9,9 +9,10 @@ import java.util.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+//import org.openqa.selenium.WebElement;
+//import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 import utils.ConfigReader;
 
@@ -36,7 +37,7 @@ public class onelogin extends df_login{
 		//Copy Temp Mail
 		driver.switchTo().window(temp_tab);
 		//Thread.sleep(10000);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='iconx']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='pre_copy']"))).click();
 		//driver.findElement(By.xpath("//button[@class='iconx']")).click();
 		String temp_mail=(String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 		System.out.println("Temp Mail:"+temp_mail);
@@ -44,13 +45,34 @@ public class onelogin extends df_login{
 		//Create OneLogin Account
 		driver.switchTo().window(onelogin_tab);
 		driver.findElement(By.xpath("//a[@class='btn-v3 btn-default-color btn-v3-small']")).click();
-		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Email']"))).clear();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Email']"))).sendKeys(temp_mail);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(ConfigReader.get("domain_name"));
+		
+		boolean isErrorShown = driver.getPageSource().contains("Please choose another domain.");
+		System.out.println(isErrorShown);
+		
+		
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLicense']"))).click();
-		Thread.sleep(10000);
+		Thread.sleep(60000);
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
-		//driver.findElement(By.xpath("//input[@id='chkLicense']")).click();
-		//driver.findElement(By.xpath("//input[@value='Get Started']")).click();
+
+		//OneLogin SignUP form
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='FirstName']"))).sendKeys(ConfigReader.get("firstname"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='LastName']"))).sendKeys(ConfigReader.get("lastname"));
+		new Select(driver.findElement(By.xpath("//select[@id='Title']"))).selectByIndex(3);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Company']"))).sendKeys(ConfigReader.get("company"));
+		new Select(driver.findElement(By.xpath("//select[@id='CountryCode']"))).selectByIndex(2);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='City']"))).sendKeys(ConfigReader.get("city"));
+		new Select(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@id='State_Province']")))).selectByIndex(21);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='PostalCode']"))).sendKeys(ConfigReader.get("postal_code"));
+		new Select(driver.findElement(By.xpath("//select[@id='EmployeeCount']"))).selectByIndex(3);
+		new Select(driver.findElement(By.xpath("//select[@id='Industry']"))).selectByIndex(16);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Phone']"))).sendKeys(ConfigReader.get("business_phone"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(ConfigReader.get("domain_name"));
+		
+		Thread.sleep(60000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
 	}
 	
 }
