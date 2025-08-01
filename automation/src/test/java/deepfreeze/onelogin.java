@@ -5,10 +5,13 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -35,10 +38,11 @@ public class onelogin extends df_login{
 		String onelogin_tab =it.next();
 		
 		//Copy Temp Mail
+		
 		driver.switchTo().window(temp_tab);
-		//Thread.sleep(10000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='domain']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(),'chitthi.in')]"))).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='pre_copy']"))).click();
-		//driver.findElement(By.xpath("//button[@class='iconx']")).click();
 		String temp_mail=(String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 		System.out.println("Temp Mail:"+temp_mail);
 		
@@ -47,16 +51,12 @@ public class onelogin extends df_login{
 		driver.findElement(By.xpath("//a[@class='btn-v3 btn-default-color btn-v3-small']")).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Email']"))).clear();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Email']"))).sendKeys(temp_mail);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(ConfigReader.get("domain_name"));
-		
-		boolean isErrorShown = driver.getPageSource().contains("Please choose another domain.");
-		System.out.println(isErrorShown);
-		
-		
+		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(ConfigReader.get("domain_name"));
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLicense']"))).click();
-		Thread.sleep(60000);
+		Thread.sleep(10000);
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
-
+		
+		
 		//OneLogin SignUP form
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='FirstName']"))).sendKeys(ConfigReader.get("firstname"));
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='LastName']"))).sendKeys(ConfigReader.get("lastname"));
@@ -70,9 +70,33 @@ public class onelogin extends df_login{
 		new Select(driver.findElement(By.xpath("//select[@id='Industry']"))).selectByIndex(16);
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='Phone']"))).sendKeys(ConfigReader.get("business_phone"));
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(ConfigReader.get("domain_name"));
+		driver.findElement(By.xpath("//div[@class='trial-additional-note']"));
+		//Thread.sleep(10000);
+		boolean isErrorPresent;
+		try {
+			
+			WebElement errorElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'Please choose another domain.')]")));
+			isErrorPresent=errorElement.isDisplayed();
+			
+		}
+		catch(TimeoutException e)
+		{
+			isErrorPresent = false;
+		}
 		
-		Thread.sleep(60000);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
+		if(isErrorPresent==true){
+			
+			System.out.println("Choose Another Domain Error Shown: "+ isErrorPresent);
+			
+		
+		}
+		else {
+			
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
+			
+		}
+		
+		
 	}
 	
 }

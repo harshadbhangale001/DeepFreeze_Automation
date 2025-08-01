@@ -2,11 +2,14 @@ package deepfreeze;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -18,6 +21,8 @@ public class df_login {
 	
 	public static WebDriver driver;
 	public static WebDriverWait wait;
+	public static Wait<WebDriver> fwait;
+	
 	//String username="harshad.bhangale317@gmail.com";
 	//String password="Aloha@123";
 	
@@ -46,8 +51,11 @@ public class df_login {
         
      // Initialize Chrome driver
         driver = new ChromeDriver(options);
-        wait=new WebDriverWait(driver, Duration.ofSeconds(15));
-        
+        wait=new WebDriverWait(driver, Duration.ofSeconds(120));
+        fwait= new FluentWait<WebDriver>(driver)
+    			.withTimeout(Duration.ofSeconds(120))
+    			.pollingEvery(Duration.ofSeconds(2))
+    			.ignoring(NoSuchElementException.class);
         
 		//DeepFeeze Login
 		driver.manage().window().maximize();

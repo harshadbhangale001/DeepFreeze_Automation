@@ -6,6 +6,7 @@
       <class name="deepfreeze.onelogin">
         <methods>
           <include name="tempmail"/>
+          <include name="logout"/>
           <include name="login"/>
         </methods>
       </class> <!-- deepfreeze.onelogin -->
