@@ -51,7 +51,7 @@ public class df_login {
         
      // Initialize Chrome driver
         driver = new ChromeDriver(options);
-        wait=new WebDriverWait(driver, Duration.ofSeconds(120));
+        wait=new WebDriverWait(driver, Duration.ofSeconds(20));
         fwait= new FluentWait<WebDriver>(driver)
     			.withTimeout(Duration.ofSeconds(120))
     			.pollingEvery(Duration.ofSeconds(2))
@@ -72,14 +72,14 @@ public class df_login {
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
 	}
 	
-	@AfterSuite
-	void logout()
-	{
-		//DeepFreeze Logout
-		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
-		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
-		driver.quit();
-	}
+//	@AfterSuite
+//	void logout()
+//	{
+//		//DeepFreeze Logout
+//		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
+//		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
+//		driver.quit();
+//	}
 	
 	
 }
