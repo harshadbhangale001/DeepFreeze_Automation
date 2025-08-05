@@ -2,20 +2,20 @@
 <testng-results ignored="0" total="2" passed="2" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-08-05T20:03:30 IST" name="Default suite" finished-at="2025-08-05T20:03:56 IST" duration-ms="25408">
+  <suite started-at="2025-08-05T21:53:38 IST" name="Default suite" finished-at="2025-08-05T21:54:19 IST" duration-ms="40732">
     <groups>
     </groups>
-    <test started-at="2025-08-05T20:03:30 IST" name="Default test" finished-at="2025-08-05T20:03:56 IST" duration-ms="25408">
+    <test started-at="2025-08-05T21:53:38 IST" name="Default test" finished-at="2025-08-05T21:54:19 IST" duration-ms="40732">
       <class name="deepfreeze.user_management_saml">
-        <test-method is-config="true" signature="setUp()[pri:0, instance:deepfreeze.user_management_saml@477b4cdf]" started-at="2025-08-05T20:03:28 IST" name="setUp" finished-at="2025-08-05T20:03:30 IST" duration-ms="2041" status="PASS">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:deepfreeze.user_management_saml@2d3379b4]" started-at="2025-08-05T21:53:37 IST" name="setUp" finished-at="2025-08-05T21:53:38 IST" duration-ms="1580" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="onelogin_signin()[pri:1, instance:deepfreeze.user_management_saml@477b4cdf]" started-at="2025-08-05T20:03:30 IST" name="onelogin_signin" finished-at="2025-08-05T20:03:35 IST" duration-ms="4985" status="PASS">
+        <test-method signature="onelogin_signin()[pri:1, instance:deepfreeze.user_management_saml@2d3379b4]" started-at="2025-08-05T21:53:38 IST" name="onelogin_signin" finished-at="2025-08-05T21:53:47 IST" duration-ms="8835" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- onelogin_signin -->
-        <test-method signature="onelogin_appCreate()[pri:2, instance:deepfreeze.user_management_saml@477b4cdf]" started-at="2025-08-05T20:03:35 IST" name="onelogin_appCreate" finished-at="2025-08-05T20:03:56 IST" depends-on-methods="deepfreeze.user_management_saml.onelogin_signin" duration-ms="20364" status="PASS">
+        <test-method signature="onelogin_appCreate()[pri:2, instance:deepfreeze.user_management_saml@2d3379b4]" started-at="2025-08-05T21:53:47 IST" name="onelogin_appCreate" finished-at="2025-08-05T21:54:19 IST" depends-on-methods="deepfreeze.user_management_saml.onelogin_signin" duration-ms="31886" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- onelogin_appCreate -->

@@ -72,6 +72,14 @@ public class user_management_saml extends BaseClass{
 			System.out.println("Element is not present.");
 		}
 		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Applications']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Applications']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Add App']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='text']"))).sendKeys("SAML");
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//h4[text()='SAML Custom Connector (Advanced)']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).clear();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).sendKeys(ConfigReader.get("app_name"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='#configuration']"))).click();
 	}
 
 	
