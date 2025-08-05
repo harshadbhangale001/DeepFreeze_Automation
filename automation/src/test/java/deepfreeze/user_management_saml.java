@@ -6,24 +6,81 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-//import org.openqa.selenium.WebElement;
-//import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import utils.ConfigReader;
+import utils.CredentialManager;
 
-public class onelogin extends df_login{
+public class user_management_saml extends BaseClass{
+	
+	public static onelogin ol = new onelogin();
+	
 	
 	@Test(priority=1)
-	public void tempmail() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException{
+	public void onelogin_signin() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException
+	{
+		
+		System.out.println(CredentialManager.getUsername());
+		System.out.println(CredentialManager.getPassword());
+		System.out.println(CredentialManager.getCreatedDate());
+		
+		String storedDateStr = CredentialManager.getCreatedDate();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate storedDate = LocalDate.parse(storedDateStr, formatter);
+		LocalDate today =  LocalDate.now();
+		long daysBetween = ChronoUnit.DAYS.between(storedDate, today);
+		System.out.println("Days Old:"+daysBetween);
+		
+		String oneloginprofile_url = "https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com";
+		
+		System.out.println(oneloginprofile_url);
+		
+		if(daysBetween<30) {
+			
+			driver.get("https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com");
+			System.out.println(oneloginprofile_url);
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']"))).click();
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']"))).click();
+		}
+		else {
+			
+			ol.onelogin_signup(driver, wait);
+			
+		}
+		
+	}
+	
+	@Test(priority=2, dependsOnMethods= {"onelogin_signin"})
+	public void onelogin_appCreate()
+	{
+		try{
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@aria-label=\"Close\"]"))).click();
+		}catch(TimeoutException e) {
+			System.out.println("Element is not present.");
+		}
+		
+	}
+
+	
+}
+
+class onelogin{
+	
+	public void onelogin_signup(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException{
+		
 		System.out.println("OneLogin");
 		String url1=ConfigReader.get("tempmailurl");
 		String url2=ConfigReader.get("oneloginurl");
@@ -141,7 +198,12 @@ public class onelogin extends df_login{
 		System.out.println("Password Set Successfully");
 		//driver.close();	
 		System.out.println("OneLogin Password window Closed");
-
+		
+		String onelogin_userName = temp_mail;
+		String onelogin_password = ConfigReader.get("onelogin_password");
+		
+		CredentialManager.saveCredentials(onelogin_userName, onelogin_password);
+		
 		String oneLoginProfile_url = "https://"+ domain_name +".onelogin.com";
 		
 		Set<String> updatedTab = driver.getWindowHandles();
@@ -156,6 +218,8 @@ public class onelogin extends df_login{
 		driver.close();
 		
 		driver.switchTo().window(oneLoginProfile_tab);
+		
+		
 	}
 	
 }
