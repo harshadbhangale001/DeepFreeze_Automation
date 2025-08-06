@@ -19,7 +19,6 @@ public class df_login extends BaseClass{
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// Auto-generated catch block
 			e.printStackTrace();
 		}
 		driver.findElement(By.xpath("//input[@id='txtPassword']")).sendKeys(ConfigReader.get("password"));
