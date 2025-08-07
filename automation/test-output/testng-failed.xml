@@ -5,9 +5,8 @@
     <classes>
       <class name="deepfreeze.user_management_saml">
         <methods>
-          <include name="onelogin_appCreate"/>
-          <include name="onelogin_signin"/>
           <include name="setUp"/>
+          <include name="saml"/>
         </methods>
       </class> <!-- deepfreeze.user_management_saml -->
     </classes>

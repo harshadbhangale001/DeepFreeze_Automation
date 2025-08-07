@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,18 +28,27 @@ import org.testng.annotations.Test;
 import utils.ConfigReader;
 import utils.CredentialManager;
 
+
 public class user_management_saml extends BaseClass{
 	
 	public static onelogin ol = new onelogin();
 	
-	
 	@Test(priority=1)
-	public void onelogin_signin() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException
+	public void saml() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
 	{
-		
-		System.out.println(CredentialManager.getUsername());
-		System.out.println(CredentialManager.getPassword());
-		System.out.println(CredentialManager.getCreatedDate());
+		ol.onelogin_signin(driver, wait);
+		ol.onelogin_appCreate(driver, wait);
+	}
+	
+	
+}
+
+class onelogin{
+	
+	public static onelogin ol = new onelogin();
+	
+	public void onelogin_signin(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException
+	{
 		
 		String storedDateStr = CredentialManager.getCreatedDate();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -47,18 +57,16 @@ public class user_management_saml extends BaseClass{
 		long daysBetween = ChronoUnit.DAYS.between(storedDate, today);
 		System.out.println("Days Old:"+daysBetween);
 		
-		String oneloginprofile_url = "https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com";
-		
-		System.out.println(oneloginprofile_url);
+		//String oneloginprofile_url = "https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com";
 		
 		if(daysBetween<30) {
 			
 			driver.get("https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com");
-			System.out.println(oneloginprofile_url);
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']"))).click();
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']"))).click();
+			
 		}
 		else {
 			
@@ -68,14 +76,11 @@ public class user_management_saml extends BaseClass{
 		
 	}
 	
-	@Test(priority=2, dependsOnMethods= {"onelogin_signin"})
-	public void onelogin_appCreate() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
+	public void onelogin_appCreate(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
 	{
 		String url1 = ConfigReader.get("url");
-		//String url2 = "https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com";
 		
 		((JavascriptExecutor) driver).executeScript("window.open('"+url1+"')");
-		//((JavascriptExecutor) driver).executeScript("window.open('"+url2+"')");
 		
 		Set<String> openTabs = driver.getWindowHandles();
 		Iterator<String> it = openTabs.iterator();
@@ -84,24 +89,51 @@ public class user_management_saml extends BaseClass{
 		String df_tab = it.next();
 		
 		
-//		driver.switchTo().window(onelogin_tab);
-//		
-//		try{
-//			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@aria-label=\"Close\"]"))).click();
-//		}catch(TimeoutException e) {
-//			System.out.println("Element is not present.");
-//		}
-//		
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Applications']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Applications']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Add App']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='text']"))).sendKeys("SAML");
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//h4[text()='SAML Custom Connector (Advanced)']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).clear();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).sendKeys(ConfigReader.get("app_name"));
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='save_app']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='#configuration']"))).click();
-//		
+		driver.switchTo().window(onelogin_tab);
+		
+		try{
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@aria-label=\"Close\"]"))).click();
+		}catch(TimeoutException e) {
+			System.out.println("Popup is not present so skiping the state.");
+		}
+		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Applications']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Applications']"))).click();
+		
+		int total_app = Integer.parseInt(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='_Value_162nl_9']"))).getText());
+		
+		//System.out.println("Total apps:"+ total_app);
+		
+		try {
+			
+			if(total_app == 5)
+			{
+				for(int i=1;i<=total_app;i--)
+				{
+
+					Thread.sleep(5000);
+					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//tr[contains(@class, 'Row')])[position()>1]"))).click();
+					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='more-actions']"))).click();	
+					new Actions(driver).moveToElement(driver.findElement(By.xpath("//a[text()='Delete']"))).click().perform();
+					wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@id='confirm_delete']"))).click();
+				
+				}
+			}
+			
+		}catch(TimeoutException e) {
+			System.out.println("Table Element is not present so skiping the deletion state.");
+		}
+		
+		//Add App
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Add App']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='text']"))).sendKeys("SAML");
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//h4[text()='SAML Custom Connector (Advanced)']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).clear();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).sendKeys(ConfigReader.get("app_name"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='save_app']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='#configuration']"))).click();
+
+
 		driver.switchTo().window(df_tab);
 		
 		driver.get(ConfigReader.get("url"));
@@ -124,78 +156,78 @@ public class user_management_saml extends BaseClass{
 		driver.findElement(By.xpath("//input[@id='btnSAMLLoginURL']")).click();
 		String saml_login_uri = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 	
-		System.out.println("Audiende URI:" + audience_uri);
-		System.out.println("Assertion Consumer URI:" + assertion_consumer_uri);
-		System.out.println("SAML Login URI:" + saml_login_uri);
-//		
-//		driver.switchTo().window(onelogin_tab);
-//		
-//		driver.findElement(By.xpath("//input[@id='param_243478']")).sendKeys(audience_uri);
-//		driver.findElement(By.xpath("//input[@id='param_243480']")).sendKeys(assertion_consumer_uri);
-//		driver.findElement(By.xpath("//input[@id='param_243481']")).sendKeys(assertion_consumer_uri);
-//		driver.findElement(By.xpath("//input[@id='param_243494']")).sendKeys(saml_login_uri);
-//		
-//		driver.findElement(By.xpath("//a[@href='#fields']")).click();
-//		
-//		//To add user.email
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='add-parameter']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='parameter_name']"))).sendKeys("user.email");
-//		driver.findElement(By.xpath("//label[@for='parameter_saml_parameter']")).click();
-//		driver.findElement(By.xpath("//div[text()='Save']")).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='- No default -']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Email']"))).click();
-//		driver.findElement(By.xpath("//div[text()='Save']")).click();
-//		
-//		//To add user.firstName
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='add-parameter']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='parameter_name']"))).sendKeys("user.firstName");
-//		driver.findElement(By.xpath("//label[@for='parameter_saml_parameter']")).click();
-//		driver.findElement(By.xpath("//div[text()='Save']")).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='- No default -']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='First Name']"))).click();
-//		driver.findElement(By.xpath("//div[text()='Save']")).click();
-//		
-//		//To add user.lastName
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='add-parameter']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='parameter_name']"))).sendKeys("user.lastName");
-//		driver.findElement(By.xpath("//label[@for='parameter_saml_parameter']")).click();
-//		driver.findElement(By.xpath("//div[text()='Save']")).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='- No default -']"))).click();
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Last Name']"))).click();
-//		driver.findElement(By.xpath("//div[text()='Save']")).click();
-//		
-//		driver.findElement(By.xpath("//a[@href='#sso']")).click();
-//		driver.findElement(By.xpath("//span[text()='SHA-1']")).click();
-//		driver.findElement(By.xpath("//div[text()='SHA-256']")).click();
-//		
-//		driver.findElement(By.xpath("//input[@value='Save']")).click();
-//		
-////		try {
-////		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='flash-close icon-close-16-white']"))).click();
-////		driver.findElement(By.xpath("//div[@class='flash-close icon-close-16-white']")).click();
-////		}catch(TimeoutException e) {
-////			e.printStackTrace();
-////		}
-//		
-//		Thread.sleep(10000);
-//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='more-actions']"))).click();
-//		
-//		new Actions(driver).moveToElement(driver.findElement(By.xpath("//a[text()='SAML Metadata']"))).click().perform();
-//		
-//		String app_url = driver.getCurrentUrl();
-//		String[] url_parts = app_url.split("/");
-//		String app_id = url_parts[4];
-//		System.out.println(app_id);
-//		String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
-//		System.out.println(metadataFile_path);
+		//System.out.println("Audiende URI:" + audience_uri);
+		//System.out.println("Assertion Consumer URI:" + assertion_consumer_uri);
+		//System.out.println("SAML Login URI:" + saml_login_uri);
+	
+		driver.switchTo().window(onelogin_tab);
 		
-		String metadataFile_path = "C:\\Downloads\\onelogin_metadata_4063527.xml";
-		//driver.switchTo().window(df_tab);
+		driver.findElement(By.xpath("//input[@id='param_243478']")).sendKeys(audience_uri);
+		driver.findElement(By.xpath("//input[@id='param_243480']")).sendKeys(assertion_consumer_uri);
+		driver.findElement(By.xpath("//input[@id='param_243481']")).sendKeys(assertion_consumer_uri);
+		driver.findElement(By.xpath("//input[@id='param_243494']")).sendKeys(saml_login_uri);
+		
+		driver.findElement(By.xpath("//a[@href='#fields']")).click();
+		
+		//To add user.email
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='add-parameter']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='parameter_name']"))).sendKeys("user.email");
+		driver.findElement(By.xpath("//label[@for='parameter_saml_parameter']")).click();
+		driver.findElement(By.xpath("//div[text()='Save']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='- No default -']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Email']"))).click();
+		driver.findElement(By.xpath("//div[text()='Save']")).click();
+		
+		//To add user.firstName
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='modal-backdrop in']")));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='add-parameter']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='parameter_name']"))).sendKeys("user.firstName");
+		driver.findElement(By.xpath("//label[@for='parameter_saml_parameter']")).click();
+		driver.findElement(By.xpath("//div[text()='Save']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='- No default -']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='First Name']"))).click();
+		driver.findElement(By.xpath("//div[text()='Save']")).click();
+		
+		//To add user.lastName
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='modal-backdrop in']")));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='add-parameter']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='parameter_name']"))).sendKeys("user.lastName");
+		driver.findElement(By.xpath("//label[@for='parameter_saml_parameter']")).click();
+		driver.findElement(By.xpath("//div[text()='Save']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='- No default -']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Last Name']"))).click();
+		driver.findElement(By.xpath("//div[text()='Save']")).click();
+		
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='modal-backdrop in']")));
+		driver.findElement(By.xpath("//a[@href='#sso']")).click();
+		driver.findElement(By.xpath("//span[text()='SHA-1']")).click();
+		driver.findElement(By.xpath("//div[text()='SHA-256']")).click();
+		
+		driver.findElement(By.xpath("//input[@value='Save']")).click();
+		
+		//Download SAML Metadata
+		Thread.sleep(10000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='more-actions']"))).click();	
+		new Actions(driver).moveToElement(driver.findElement(By.xpath("//a[text()='SAML Metadata']"))).click().perform();
+		
+		String app_url = driver.getCurrentUrl();
+		String[] url_parts = app_url.split("/");
+		String app_id = url_parts[4];
+		System.out.println(app_id);
+		String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
+		//System.out.println(metadataFile_path);
+		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='nav-user-name']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='navbar_item_10']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Log Out']"))).click();
+		
+		driver.close();
+		
+		driver.switchTo().window(df_tab);
 		driver.findElement(By.xpath("//a[text()='Next']")).click();
 		
 		if(driver.findElement(By.xpath("//input[@id='rdoUploadIdP']")).isSelected()==false)
 		{
-			//driver.findElement(By.xpath("//label[@for='rdoUploadIdP']")).click();
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='rdoUploadIdP']"))).click();
 		}
 		driver.findElement(By.xpath("//input[@id='btnIPMetadata']")).click();
@@ -217,23 +249,19 @@ public class user_management_saml extends BaseClass{
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='accessAllSitesId']"))).click();
 		driver.findElement(By.xpath("//input[@value='Save']")).click();
 		
-		String domainName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='txtLoginDomain']"))).getAttribute("value");
-		System.out.println(domainName);
-		
 		driver.findElement(By.xpath("//a[@id='logg_main']")).click();
 		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
+		//driver.close();
 		
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(domainName);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
-		
-		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
-	
-}
-
-class onelogin{
 	
 	public void onelogin_signup(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException{
 		
@@ -290,12 +318,11 @@ class onelogin{
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(domain_name);
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLicense']"))).click();
 			Thread.sleep(10000);
-			//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
+			
 		}
 		else
 		{
-			//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='BrandSubDomain']"))).sendKeys(temp_mail.replace("@chitthi.in",""));
-			//driver.findElement(By.xpath("//div[@class='trial-additional-note']"));
+
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLicense']"))).click();
 			Thread.sleep(10000);
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Get Started']"))).click();
