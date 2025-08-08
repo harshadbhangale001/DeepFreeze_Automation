@@ -2,19 +2,19 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-08-07T19:24:57 IST" name="Default suite" finished-at="2025-08-07T19:26:33 IST" duration-ms="96120">
+  <suite started-at="2025-08-08T19:37:01 IST" name="Default suite" finished-at="2025-08-08T19:37:13 IST" duration-ms="11854">
     <groups>
     </groups>
-    <test started-at="2025-08-07T19:24:57 IST" name="Default test" finished-at="2025-08-07T19:26:33 IST" duration-ms="96120">
+    <test started-at="2025-08-08T19:37:01 IST" name="Default test" finished-at="2025-08-08T19:37:13 IST" duration-ms="11854">
       <class name="deepfreeze.user_management_saml">
-        <test-method is-config="true" signature="setUp()[pri:0, instance:deepfreeze.user_management_saml@3eb25e1a]" started-at="2025-08-07T19:24:54 IST" name="setUp" finished-at="2025-08-07T19:24:57 IST" duration-ms="2245" status="PASS">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:deepfreeze.user_management_saml@3b0090a4]" started-at="2025-08-08T19:36:59 IST" name="setUp" finished-at="2025-08-08T19:37:01 IST" duration-ms="2065" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="saml()[pri:1, instance:deepfreeze.user_management_saml@3eb25e1a]" started-at="2025-08-07T19:24:57 IST" name="saml" finished-at="2025-08-07T19:26:33 IST" duration-ms="96059" status="PASS">
+        <test-method signature="saml_login()[pri:1, instance:deepfreeze.user_management_saml@3b0090a4]" started-at="2025-08-08T19:37:01 IST" name="saml_login" finished-at="2025-08-08T19:37:13 IST" duration-ms="11805" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- saml -->
+        </test-method> <!-- saml_login -->
       </class> <!-- deepfreeze.user_management_saml -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->

@@ -1,0 +1,38 @@
+public class TC021_SamlLoginCheck extends BaseClass
+{
+	@Test(priority=1, groups= {"smoke", "full"}, description="Setup SAML and make sure SAML should be setup successfully")
+	public void setupSAML() throws IOException, InterruptedException
+	{		
+		driver.get(p.getProperty("usermanagementURL"));
+		UserManagement um = new UserManagement(driver);
+		String file = p.getProperty("samlxmlfilepath");
+		System.out.println("Path of the xml " + file);
+		boolean result=um.setupSAML(file, p.getProperty("samluploadfileusingscript"), p.getProperty("samldomainname"));
+		Assert.assertTrue(result, "Failed to setup SAML");
+		driver.get(p.getProperty("signouturl"));
+	}
+
+
+public boolean setupSAML(String metadatafile, String samlscript, String domainname) throws IOException, InterruptedException
+	{   boolean isactiondone = false;
+	    btnsamlintegration.click();
+	    domaintxtfield.clear();
+	    domaintxtfield.sendKeys(domainname);
+		idptabclick.click();
+		uploadxmlradbtn.click();
+		System.out.println(metadatafile);
+		browsexmlbtn.click();		
+        Runtime.getRuntime().exec(samlscript);
+        Thread.sleep(2000);
+		nexttabbtn.click();
+		chkallsites.click();
+		savesamlsettingbtn.click();
+		mywait.until(ExpectedConditions.visibilityOf(deletesuccesspopup));
+		   if(deletesuccesspopup.isDisplayed())
+		    	{
+		    	  mywait.until(ExpectedConditions.invisibilityOf(deletesuccesspopup));	    			
+		    	}
+		    	isactiondone = true;
+				return isactiondone;
+
+	}

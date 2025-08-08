@@ -49,14 +49,14 @@ public class CredentialManager {
 	}
 	
 	public static String getUsername() {
-		return isCredentialValid() ? loadCredentials().getProperty("username"):null;
+		return loadCredentials().getProperty("username");
 	}
 	
 	public static String getPassword() {
-		return isCredentialValid() ? loadCredentials().getProperty("password"):null;
+		return loadCredentials().getProperty("password");
 	}
 	
 	public static String getCreatedDate() {
-		return isCredentialValid() ? loadCredentials().getProperty("createdDate"):null;
+		return loadCredentials().getProperty("createdDate");
 	}
 }

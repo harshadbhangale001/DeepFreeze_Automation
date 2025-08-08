@@ -9,14 +9,12 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,6 +22,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import utils.ConfigReader;
 import utils.CredentialManager;
@@ -34,11 +33,41 @@ public class user_management_saml extends BaseClass{
 	public static onelogin ol = new onelogin();
 	
 	@Test(priority=1)
-	public void saml() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
+	public void saml_login() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
 	{
-		ol.onelogin_signin(driver, wait);
-		ol.onelogin_appCreate(driver, wait);
+		
+		String storedDateStr = CredentialManager.getCreatedDate();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate storedDate = LocalDate.parse(storedDateStr, formatter);
+		LocalDate today =  LocalDate.now();
+		long daysBetween = ChronoUnit.DAYS.between(storedDate, today);
+		System.out.println("Current Onelogin Account Is "+daysBetween+" Days Old");
+
+		if(daysBetween >= 30)
+		{
+			ol.onelogin_signin(driver, wait);
+			ol.onelogin_appCreate(driver, wait);
+		}
+
+		
+		driver.get(ConfigReader.get("url"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
+		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		if(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[@id='logg_main']"))).getText().replaceAll("\\s", "").equals(CredentialManager.getUsername()))
+			Assert.assertTrue(true);
+		else 
+			Assert.fail("SAML User Not Able To Login.");
+		
 	}
+	
+	//public void 
 	
 	
 }
@@ -46,6 +75,7 @@ public class user_management_saml extends BaseClass{
 class onelogin{
 	
 	public static onelogin ol = new onelogin();
+	public static long daysBetween;
 	
 	public void onelogin_signin(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException
 	{
@@ -54,8 +84,8 @@ class onelogin{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate storedDate = LocalDate.parse(storedDateStr, formatter);
 		LocalDate today =  LocalDate.now();
-		long daysBetween = ChronoUnit.DAYS.between(storedDate, today);
-		System.out.println("Days Old:"+daysBetween);
+		daysBetween = ChronoUnit.DAYS.between(storedDate, today);
+		System.out.println("Current Onelogin Account Is "+daysBetween+" Days Old");
 		
 		//String oneloginprofile_url = "https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com";
 		
@@ -213,7 +243,7 @@ class onelogin{
 		String app_url = driver.getCurrentUrl();
 		String[] url_parts = app_url.split("/");
 		String app_id = url_parts[4];
-		System.out.println(app_id);
+		//System.out.println(app_id);
 		String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
 		//System.out.println(metadataFile_path);
 		
@@ -246,21 +276,19 @@ class onelogin{
 		robot.keyRelease(KeyEvent.VK_ENTER);
 		
 		driver.findElement(By.xpath("//a[text()='Next']")).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='accessAllSitesId']"))).click();
+		
+		if(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='accessAllSitesId']"))).isSelected()==false)
+		{
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='accessAllSitesId']"))).click();
+		}
+		
 		driver.findElement(By.xpath("//input[@value='Save']")).click();
 		
 		driver.findElement(By.xpath("//a[@id='logg_main']")).click();
 		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
-		//driver.close();
 		
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
-		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		driver.close();
+		
 	}
 	
 	public void onelogin_signup(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException{
