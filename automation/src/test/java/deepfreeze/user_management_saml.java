@@ -33,8 +33,29 @@ public class user_management_saml extends BaseClass{
 	public static onelogin ol = new onelogin();
 	
 	@Test(priority=1)
-	public void saml_login() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
+	public void deepfreeze_saml_login() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
 	{
+		
+		driver.get(ConfigReader.get("url"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
+		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+		
+		try {
+			
+			if(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[text()='Domain Identifier does not exist.']"))).isDisplayed())
+			{
+				ol.onelogin_signin(driver, wait);
+				ol.onelogin_appCreate(driver, wait);
+			}
+			
+		} catch(TimeoutException e)
+		{
+			
+			System.out.println("Domain Identifier Present So Skipping The State.");
+			
+		}
 		
 		String storedDateStr = CredentialManager.getCreatedDate();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -49,12 +70,12 @@ public class user_management_saml extends BaseClass{
 			ol.onelogin_appCreate(driver, wait);
 		}
 
-		
-		driver.get(ConfigReader.get("url"));
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
-		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+		System.out.println(ConfigReader.get("url"));
+		//driver.get(ConfigReader.get("url"));
+		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
+		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
+		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
+		//driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
@@ -161,6 +182,7 @@ class onelogin{
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).clear();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='app_name']"))).sendKeys(ConfigReader.get("app_name"));
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='save_app']"))).click();
+		Thread.sleep(2000);
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='#configuration']"))).click();
 
 
@@ -176,10 +198,24 @@ class onelogin{
 		}
 		driver.findElement(By.xpath("//input[@id='txtPassword']")).sendKeys(ConfigReader.get("password"));
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
-		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[@id='logg_main']"))).click();
 		driver.findElement(By.xpath("//a[@id='aLogin_User_Management']")).click();
-		driver.findElement(By.xpath("//button[@id='btnSAMLIntegration']")).click();
-		driver.findElement(By.xpath("//input[@id='btnAudianceURI']")).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='btnSAMLIntegration']"))).click();
+		
+		//Checking Evalution
+		try {		
+		
+			if(driver.findElement(By.xpath("//div[@id='popup_ProdUltiEval']")).isDisplayed() == true)
+				driver.findElement(By.xpath("//input[@id='btnProdEvalStartYes']")).click();
+			else if(driver.findElement(By.xpath("//div[@id='popup_ProdUltiExp']")).isDisplayed() == true)
+				Assert.fail("30 Days Evalution Expired");
+
+		}catch(NoSuchElementException e) {
+			System.out.println("Product Not Expired Yet");
+		}
+		
+		Thread.sleep(2000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='btnAudianceURI']"))).click();
 		String audience_uri = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 		driver.findElement(By.xpath("//input[@id='btnAssertionURL']")).click();
 		String assertion_consumer_uri = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
@@ -244,12 +280,13 @@ class onelogin{
 		String[] url_parts = app_url.split("/");
 		String app_id = url_parts[4];
 		//System.out.println(app_id);
-		String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
-		//System.out.println(metadataFile_path);
+		//String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
+		//For Ma
+		String metadataFile_path = "/Users/cortex/Downloads/onelogin_metadata_"+ app_id +".xml"; 
+		System.out.println(metadataFile_path);
 		
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='nav-user-name']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='navbar_item_10']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Log Out']"))).click();
+		new Actions(driver).moveToElement(driver.findElement(By.xpath("//span[@class='nav-user-name']"))).perform();
+		new Actions(driver).moveToElement(driver.findElement(By.xpath("//a[text()='Log Out']"))).click().perform();
 		
 		driver.close();
 		
@@ -268,12 +305,42 @@ class onelogin{
 		Thread.sleep(5000);
 		
 		Robot robot = new Robot();
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_V);
-		robot.keyRelease(KeyEvent.VK_V);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_ENTER);
-		robot.keyRelease(KeyEvent.VK_ENTER);
+		
+//			robot.keyPress(KeyEvent.VK_CONTROL);
+//			robot.keyPress(KeyEvent.VK_V);
+//			robot.keyRelease(KeyEvent.VK_V);
+//			robot.keyRelease(KeyEvent.VK_CONTROL);
+//			robot.keyPress(KeyEvent.VK_ENTER);
+//			robot.keyRelease(KeyEvent.VK_ENTER);
+
+
+	    // CMD + SHIFT + G to open "Go to the folder" dialog in Finder
+	    robot.keyPress(KeyEvent.VK_META);   // Command
+	    robot.keyPress(KeyEvent.VK_SHIFT);
+	    robot.keyPress(KeyEvent.VK_G);
+	    robot.keyRelease(KeyEvent.VK_G);
+	    robot.keyRelease(KeyEvent.VK_SHIFT);
+	    robot.keyRelease(KeyEvent.VK_META);
+
+	    robot.setAutoDelay(500);
+
+	    // Paste the file path
+	    robot.keyPress(KeyEvent.VK_META);
+	    robot.keyPress(KeyEvent.VK_V);
+	    robot.keyRelease(KeyEvent.VK_V);
+	    robot.keyRelease(KeyEvent.VK_META);
+
+	    robot.setAutoDelay(500);
+
+	    // Press Enter to navigate to file
+	    robot.keyPress(KeyEvent.VK_ENTER);
+	    robot.keyRelease(KeyEvent.VK_ENTER);
+
+	    robot.setAutoDelay(500);
+
+	    // Press Enter again to select and upload
+	    robot.keyPress(KeyEvent.VK_ENTER);
+	    robot.keyRelease(KeyEvent.VK_ENTER);
 		
 		driver.findElement(By.xpath("//a[text()='Next']")).click();
 		

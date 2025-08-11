@@ -5,8 +5,8 @@
     <classes>
       <class name="deepfreeze.user_management_saml">
         <methods>
+          <include name="deepfreeze_saml_login"/>
           <include name="setUp"/>
-          <include name="saml_login"/>
         </methods>
       </class> <!-- deepfreeze.user_management_saml -->
     </classes>
