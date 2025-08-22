@@ -24,6 +24,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.Status;
+
 import utils.ConfigReader;
 import utils.CredentialManager;
 
@@ -33,9 +36,11 @@ public class user_management_saml extends BaseClass{
 	public static onelogin ol = new onelogin();
 	
 	@Test(priority=1)
-	public void deepfreeze_saml_login() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
+	public void SAML_TC_01_setup_saml_integration() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
 	{
-		
+		ol.onelogin_signin(driver, wait);
+		ol.onelogin_appCreate(driver, wait);
+	
 		driver.get(ConfigReader.get("url"));
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
@@ -43,57 +48,124 @@ public class user_management_saml extends BaseClass{
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
 		
 		try {
-			
-			if(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[text()='Domain Identifier does not exist.']"))).isDisplayed())
-			{
-				ol.onelogin_signin(driver, wait);
-				ol.onelogin_appCreate(driver, wait);
-			}
-			
-		} catch(TimeoutException e)
-		{
-			
-			System.out.println("Domain Identifier Present So Skipping The State.");
-			
+		    WebElement element = wait.until(
+		        ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[text()='Domain Identifier does not exist.']"))
+		    );
+
+		    if (element.isDisplayed()) {   
+		    	Assert.fail("DeepFreeze SAML Integration Not Successfull");
+		    }
+
+		} catch (TimeoutException e) {
+			Assert.assertTrue(true);
+			System.out.println("Element not present. Skipping steps...");
+		    
 		}
 		
-		String storedDateStr = CredentialManager.getCreatedDate();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate storedDate = LocalDate.parse(storedDateStr, formatter);
-		LocalDate today =  LocalDate.now();
-		long daysBetween = ChronoUnit.DAYS.between(storedDate, today);
-		System.out.println("Current Onelogin Account Is "+daysBetween+" Days Old");
-
-		if(daysBetween >= 30)
-		{
-			ol.onelogin_signin(driver, wait);
-			ol.onelogin_appCreate(driver, wait);
-		}
-
-		System.out.println(ConfigReader.get("url"));
-		//driver.get(ConfigReader.get("url"));
-		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
-		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
-		//wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
-		//driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+	}
+	
+	@Test(priority=2)
+	public void SAML_TC_02_deepfreeze_saml_login_check() throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
+	{
+		
+//		System.out.println(ConfigReader.get("url"));
+//		logStep(Status.INFO, ConfigReader.get("url")+" url opend.");
+//		driver.get(ConfigReader.get("url"));
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
+//		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+		
+		logStep(Status.INFO, "Redirected to the onelogin for user login.");
+		
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='password']"))).sendKeys(CredentialManager.getPassword());
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 		
-		if(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[@id='logg_main']"))).getText().replaceAll("\\s", "").equals(CredentialManager.getUsername()))
-			Assert.assertTrue(true);
-		else 
+		try {
+			
+			if(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@id='dvPopup']"))).isDisplayed())
+			{
+				driver.findElement(By.xpath("//label[@for='chkTermsofservice']")).click();
+				driver.findElement(By.xpath("//input[@id='btnTermsAgree']")).click();
+			}
+			
+		}catch(TimeoutException e) {
+			System.out.println("Deep Freeze Cloud - Terms of Service Popup is not displayed so skipping the state.");
+		}
+		
+		System.out.println("SAML_TC_02_deepfreeze_saml_login_check Test Ended");
+		
+		try {
+			
+			if(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[@id='logg_main']"))).getText().replaceAll("\\s", "").equals(CredentialManager.getUsername()))
+			{
+				Assert.assertTrue(true);
+				logStep(Status.INFO, "SAML user login done.");
+			}
+			else 
+			{
+				Assert.fail("SAML User Not Able To Login.");
+				logStep(Status.INFO, "SAML user not able login.");
+			}
+			
+		} catch(TimeoutException e) {
 			Assert.fail("SAML User Not Able To Login.");
+		}
 		
 	}
 	
-	//public void 
-	
-	
+	@Test(priority = 3)
+	public void SAML_TC03_reset_saml_integration()
+	{
+		
+		System.out.println("SAML_TC03_reset_saml_integration Test Started");
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[@id='logg_main']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='aLogin_User_Management']"))).click();
+		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='btnSAMLIntegration']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Reset']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='btnDeleteSAMLOk']"))).click();
+		
+		logStep(Status.INFO, "SAML User Reset Done.");
+		
+		System.out.println("SAML_TC03_reset_saml_integration SAML RESET DONE");
+		
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='logg_main']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='aSignOut']"))).click();
+		
+		System.out.println("SAML_TC03_reset_saml_integration SAML Checking After RESET DONE");
+		
+		logStep(Status.INFO, "Checking SAML User Login After Reset.");
+		//SAML Login Check Afer Reset
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@id='spnLoginWithCompCredsText']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chkLogUsingSAMLCreds']"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='txtSAMP']"))).sendKeys(ConfigReader.get("domainName"));
+		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+		
+		try {
+		    WebElement element = wait.until(
+		        ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[text()='Domain Identifier does not exist.']"))
+		    );
+
+		    if (element.isDisplayed()) {   
+		    	Assert.assertTrue(true, "SAML User Reset Successful.");
+		    }
+
+		} catch (TimeoutException e) {
+			Assert.assertTrue(true);
+			System.out.println("Element not present. Skipping steps...");
+		    
+		}
+		
+		driver.close();
+	}
+
 }
 
-class onelogin{
+
+class onelogin extends BaseClass{
 	
 	public static onelogin ol = new onelogin();
 	public static long daysBetween;
@@ -112,6 +184,7 @@ class onelogin{
 		
 		if(daysBetween<30) {
 			
+			logStep(Status.INFO, "Current OneLogin user is less than 30 days old going for signin.");
 			driver.get("https://" + (CredentialManager.getUsername()).replace("@chitthi.in", "") + ".onelogin.com");
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='username']"))).sendKeys(CredentialManager.getUsername());
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@type='submit']"))).click();
@@ -121,6 +194,7 @@ class onelogin{
 		}
 		else {
 			
+			logStep(Status.INFO, "Current onelogin account is more than 30 days old going for signup.");
 			ol.onelogin_signup(driver, wait);
 			
 		}
@@ -130,6 +204,8 @@ class onelogin{
 	public void onelogin_appCreate(WebDriver driver, WebDriverWait wait) throws HeadlessException, UnsupportedFlavorException, IOException, InterruptedException, AWTException
 	{
 		String url1 = ConfigReader.get("url");
+		
+		logStep(Status.INFO, "Started SAML App creation.");
 		
 		((JavascriptExecutor) driver).executeScript("window.open('"+url1+"')");
 		
@@ -148,6 +224,18 @@ class onelogin{
 			System.out.println("Popup is not present so skiping the state.");
 		}
 		
+		try{
+			
+			if(driver.findElement(By.xpath("//div[text()='Add OneLogin to your browser']")).isDisplayed())
+			{
+				System.out.println("Add Extention Popup Is Present");
+				driver.findElement(By.xpath("//div[text()='Administration']")).click();
+			}
+				
+		}catch(TimeoutException e) {
+			System.out.println("Add Extention popup is not present so skiping the state.");
+		}
+		
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Applications']"))).click();
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Applications']"))).click();
 		
@@ -159,6 +247,7 @@ class onelogin{
 			
 			if(total_app == 5)
 			{
+				logStep(Status.INFO, "More than 5 or equal app are present deleting all the apps.");
 				for(int i=1;i<=total_app;i--)
 				{
 
@@ -185,7 +274,7 @@ class onelogin{
 		Thread.sleep(2000);
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='#configuration']"))).click();
 
-
+		
 		driver.switchTo().window(df_tab);
 		
 		driver.get(ConfigReader.get("url"));
@@ -198,10 +287,12 @@ class onelogin{
 		}
 		driver.findElement(By.xpath("//input[@id='txtPassword']")).sendKeys(ConfigReader.get("password"));
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
+		logStep(Status.INFO, "DeepFreeze Login Done.");
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[@id='logg_main']"))).click();
 		driver.findElement(By.xpath("//a[@id='aLogin_User_Management']")).click();
+		logStep(Status.INFO, "User Management page opened.");
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='btnSAMLIntegration']"))).click();
-		
+		logStep(Status.INFO, "SAML integration page opened");
 		//Checking Evalution
 		try {		
 		
@@ -225,7 +316,7 @@ class onelogin{
 		//System.out.println("Audiende URI:" + audience_uri);
 		//System.out.println("Assertion Consumer URI:" + assertion_consumer_uri);
 		//System.out.println("SAML Login URI:" + saml_login_uri);
-	
+		
 		driver.switchTo().window(onelogin_tab);
 		
 		driver.findElement(By.xpath("//input[@id='param_243478']")).sendKeys(audience_uri);
@@ -280,9 +371,9 @@ class onelogin{
 		String[] url_parts = app_url.split("/");
 		String app_id = url_parts[4];
 		//System.out.println(app_id);
-		//String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
-		//For Ma
-		String metadataFile_path = "/Users/cortex/Downloads/onelogin_metadata_"+ app_id +".xml"; 
+		String metadataFile_path = "C:\\Downloads\\onelogin_metadata_"+app_id+".xml";
+		//For Mac
+		//String metadataFile_path = "/Users/cortex/Downloads/onelogin_metadata_"+ app_id +".xml"; 
 		System.out.println(metadataFile_path);
 		
 		new Actions(driver).moveToElement(driver.findElement(By.xpath("//span[@class='nav-user-name']"))).perform();
@@ -297,64 +388,61 @@ class onelogin{
 		{
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='rdoUploadIdP']"))).click();
 		}
+		
 		driver.findElement(By.xpath("//input[@id='btnIPMetadata']")).click();
-	
-		StringSelection selection = new StringSelection(metadataFile_path);
-		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
 		
+		String autoItScript = "C:\\Downloads\\fileUpload.exe";
+		
+		try {
+			Runtime.getRuntime().exec(new String[] {autoItScript, metadataFile_path});
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 		Thread.sleep(5000);
+		logStep(Status.INFO, "SAML metadata uploaded successfully");
 		
-		Robot robot = new Robot();
-		
+//		StringSelection selection = new StringSelection(metadataFile_path);
+//		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+//		
+//		Thread.sleep(5000);
+//		
+//		Robot robot = new Robot();
+//		
 //			robot.keyPress(KeyEvent.VK_CONTROL);
 //			robot.keyPress(KeyEvent.VK_V);
 //			robot.keyRelease(KeyEvent.VK_V);
 //			robot.keyRelease(KeyEvent.VK_CONTROL);
 //			robot.keyPress(KeyEvent.VK_ENTER);
 //			robot.keyRelease(KeyEvent.VK_ENTER);
-
-
-	    // CMD + SHIFT + G to open "Go to the folder" dialog in Finder
-	    robot.keyPress(KeyEvent.VK_META);   // Command
-	    robot.keyPress(KeyEvent.VK_SHIFT);
-	    robot.keyPress(KeyEvent.VK_G);
-	    robot.keyRelease(KeyEvent.VK_G);
-	    robot.keyRelease(KeyEvent.VK_SHIFT);
-	    robot.keyRelease(KeyEvent.VK_META);
-
-	    robot.setAutoDelay(500);
-
-	    // Paste the file path
-	    robot.keyPress(KeyEvent.VK_META);
-	    robot.keyPress(KeyEvent.VK_V);
-	    robot.keyRelease(KeyEvent.VK_V);
-	    robot.keyRelease(KeyEvent.VK_META);
-
-	    robot.setAutoDelay(500);
-
-	    // Press Enter to navigate to file
-	    robot.keyPress(KeyEvent.VK_ENTER);
-	    robot.keyRelease(KeyEvent.VK_ENTER);
-
-	    robot.setAutoDelay(500);
-
-	    // Press Enter again to select and upload
-	    robot.keyPress(KeyEvent.VK_ENTER);
-	    robot.keyRelease(KeyEvent.VK_ENTER);
 		
 		driver.findElement(By.xpath("//a[text()='Next']")).click();
 		
 		if(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='accessAllSitesId']"))).isSelected()==false)
 		{
+			System.out.println("Allow access to all sites checkbox clicked");
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='accessAllSitesId']"))).click();
+			logStep(Status.INFO, "Allow access to all sites checkbox checked.");
 		}
 		
 		driver.findElement(By.xpath("//input[@value='Save']")).click();
 		
+		logStep(Status.INFO, "SAML setup with DeepFreeze is done.");
+		
 		driver.findElement(By.xpath("//a[@id='logg_main']")).click();
 		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
 		
-		driver.close();
+		//driver.close();
+		
+	}
+	
+	public void onelogin_appDelete(WebDriver driver, WebDriverWait wait) throws InterruptedException
+	{
+		
+		Thread.sleep(5000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//tr[contains(@class, 'Row')])[position()>1]"))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='more-actions']"))).click();	
+		new Actions(driver).moveToElement(driver.findElement(By.xpath("//a[text()='Delete']"))).click().perform();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@id='confirm_delete']"))).click();
 		
 	}
 	
@@ -365,10 +453,8 @@ class onelogin{
 		String url2=ConfigReader.get("oneloginurl");
 		
 		
-		
 		((JavascriptExecutor) driver).executeScript("window.open('"+url1+"')");
 		((JavascriptExecutor) driver).executeScript("window.open('"+url2+"')");
-		
 		
 		
 		Set<String> allTabs = driver.getWindowHandles();

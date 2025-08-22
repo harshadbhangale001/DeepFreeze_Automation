@@ -8,8 +8,10 @@
     <classes>
       <class name="deepfreeze.user_management_saml">
         <methods>
+          <include name="SAML_TC_02_deepfreeze_saml_login_check"/>
+          <include name="SAML_TC_01_setup_saml_integration"/>
+          <include name="SAML_TC03_reset_saml_integration"/>
           <include name="setUp"/>
-          <include name="saml_login"/>
         </methods>
       </class> <!-- deepfreeze.user_management_saml -->
     </classes>
