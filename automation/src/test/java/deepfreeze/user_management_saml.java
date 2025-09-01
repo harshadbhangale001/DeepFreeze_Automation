@@ -154,7 +154,7 @@ public class user_management_saml extends BaseClass{
 		    }
 
 		} catch (TimeoutException e) {
-			Assert.assertTrue(true);
+			Assert.fail();
 			System.out.println("Element not present. Skipping steps...");
 		    
 		}

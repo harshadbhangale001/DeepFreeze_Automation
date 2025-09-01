@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-
+import org.apache.commons.io.FileUtils;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -59,26 +59,37 @@ public class ExtentTestListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
-        test.get().fail("❌ Test Failed: " + result.getThrowable());
+        test.get().fail("Test Failed: " + result.getThrowable());
 
         if (driver != null) {
             try {
-                // Add prefix so Extent can render it as thumbnail
-                String base64Screenshot = "data:image/png;base64," +
-                        ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+         
+                File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-                // ✅ Thumbnail at top
-                test.get().addScreenCaptureFromBase64String(base64Screenshot, result.getMethod().getMethodName());
+                String screenshotDir = System.getProperty("user.dir") + "/reports/screenshots/";
 
-                // (Optional) Embedded screenshot in logs
-                test.get().fail("Screenshot of failure:",
+                File dir = new File(screenshotDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                String screenshotName = result.getMethod().getMethodName() + ".png";
+                String screenshotPath = screenshotDir + screenshotName;
+
+                FileUtils.copyFile(src, new File(screenshotPath));
+                
+                test.get().addScreenCaptureFromPath("screenshots/" + screenshotName, "Failure Screenshot");
+
+                String base64Screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+                test.get().fail("Base64 Screenshot",
                         MediaEntityBuilder.createScreenCaptureFromBase64String(base64Screenshot).build());
 
             } catch (Exception e) {
-                test.get().fail("⚠ Failed to attach screenshot: " + e.getMessage());
+                test.get().fail("Failed to attach screenshot: " + e.getMessage());
             }
         }
     }
+
 
 
 

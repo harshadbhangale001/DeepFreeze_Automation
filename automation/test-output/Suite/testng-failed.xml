@@ -3,17 +3,17 @@
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
   <listeners>
     <listener class-name="utils.ExtentTestListener"/>
+    <listener class-name="utils.CustomReportListener"/>
   </listeners>
   <test thread-count="5" name="Test(failed)">
     <classes>
-      <class name="deepfreeze.user_management_saml">
+      <class name="deepfreeze.SampleTests">
         <methods>
-          <include name="SAML_TC_02_deepfreeze_saml_login_check"/>
-          <include name="SAML_TC_01_setup_saml_integration"/>
-          <include name="SAML_TC03_reset_saml_integration"/>
-          <include name="setUp"/>
+          <include name="cloudAgentStatusReportedTest" invocation-numbers="1"/>
+          <include name="installRandomSUAppTest" invocation-numbers="2"/>
+          <include name="serviceSpecificActionExecutionTest" invocation-numbers="1"/>
         </methods>
-      </class> <!-- deepfreeze.user_management_saml -->
+      </class> <!-- deepfreeze.SampleTests -->
     </classes>
   </test> <!-- Test(failed) -->
 </suite> <!-- Failed suite [Suite] -->

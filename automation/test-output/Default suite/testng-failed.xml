@@ -3,13 +3,12 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="deepfreeze.user_management_saml">
+      <class name="deepfreeze.load_time_check">
         <methods>
-          <include name="SAML_TC_02_deepfreeze_saml_login_check"/>
-          <include name="SAML_TC03_reset_saml_integration"/>
+          <include name="DF_Dashboard_measureTimes"/>
           <include name="setUp"/>
         </methods>
-      </class> <!-- deepfreeze.user_management_saml -->
+      </class> <!-- deepfreeze.load_time_check -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Suite">
+<suite name="PostGre SQL Build Test">
 
 	<listeners>
-        <listener class-name="utils.ExtentTestListener"/>
+        <!--  <listener class-name="utils.ExtentTestListener"/> -->
+        <!-- <l</l>>istener class-name="utils.CustomReportListener"/>-->
     </listeners>
 
-  <test thread-count="5" name="Test">
+  <test thread-count="5" name="Dashboard Pages Loading Time Test">
     <classes>
-  	  <!-- <class name="deepfreeze.df_login"/>-->
+  	  <class name="deepfreeze.df_login"/>
       <!-- <class name="deepfreeze.agent_download"/> -->
       <!-- <class name="deepfreeze.onelogin"/> -->
-      <class name="deepfreeze.user_management_saml"/>
+      <!-- <class name="deepfreeze.user_management_saml"/> -->
+      <class name="deepfreeze.load_time_check"/>
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->

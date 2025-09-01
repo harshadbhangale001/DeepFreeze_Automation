@@ -3,6 +3,7 @@ package deepfreeze;
 import org.openqa.selenium.By;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import utils.ConfigReader;
 
@@ -25,15 +26,22 @@ public class df_login extends BaseClass{
 		driver.findElement(By.xpath("//input[@id='btnlogin']")).click();
 	}
 	
-	@AfterClass
-	void logout()
-	{
-		//DeepFreeze Logout
-		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
-		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
-		driver.quit();
-	}
+	@Test
+    public void verifyLogin() {
+        // Add an assertion or validation here to check login was successful
+        String loggedInUser = driver.findElement(By.xpath("//li[@id='logg_main']")).getText();
+        System.out.println("Logged in as: " + loggedInUser);
+    }
 	
+//	@AfterClass
+//	void logout()
+//	{
+//		//DeepFreeze Logout
+//		driver.findElement(By.xpath("//li[@id='logg_main']")).click();
+//		driver.findElement(By.xpath("//a[@id='aSignOut']")).click();
+//		driver.quit();
+//	}
+//	
 	
 }
 
