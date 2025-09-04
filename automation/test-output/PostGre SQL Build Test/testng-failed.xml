@@ -5,7 +5,7 @@
     <classes>
       <class name="deepfreeze.load_time_check">
         <methods>
-          <include name="DF_Dashboard_measureTimes"/>
+          <include name="AE_Dashboard_measureTimes"/>
           <include name="setUp"/>
         </methods>
       </class> <!-- deepfreeze.load_time_check -->

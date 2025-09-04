@@ -55,11 +55,11 @@ function toggleAllBoxes() {
 <body>
 <h2 align='center'>Dashboard Pages Loading Time Test</h2><table border='1' align="center">
 <tr>
-<td>Tests passed/Failed/Skipped:</td><td>1/1/0</td>
+<td>Tests passed/Failed/Skipped:</td><td>2/1/0</td>
 </tr><tr>
-<td>Started on:</td><td>Mon Sep 01 19:28:36 IST 2025</td>
+<td>Started on:</td><td>Thu Sep 04 18:39:28 IST 2025</td>
 </tr>
-<tr><td>Total time:</td><td>27 seconds (27445 ms)</td>
+<tr><td>Total time:</td><td>18 seconds (18017 ms)</td>
 </tr><tr>
 <td>Included groups:</td><td></td>
 </tr><tr>
@@ -76,29 +76,15 @@ function toggleAllBoxes() {
 <td><b>Instance</b></td>
 </tr>
 <tr>
-<td title='deepfreeze.load_time_check.DF_Dashboard_measureTimes()'><b>DF_Dashboard_measureTimes</b><br>Test class: deepfreeze.load_time_check</td>
-<td><div><pre>org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element located by By.xpath: //table[@class=&apos;dx-datagrid-table dx-datagrid-table-fixed&apos;] (tried for 20 second(s) with 500 milliseconds interval)
-Build info: version: &apos;4.34.0&apos;, revision: &apos;707dcb4246*&apos;
-System info: os.name: &apos;Windows 10&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;21.0.7&apos;
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 139.0.7258.139, chrome: {chromedriverVersion: 139.0.7258.154 (9e0d6b2b47f..., userDataDir: C:\Users\admin\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:53390}, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:53390/devtoo..., se:cdpVersion: 139.0.7258.139, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 3e5e32e7980ae0ee65167c0f39aa9d6d
-	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
-	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
-	at deepfreeze.load_time_check.getTableLoadTime(load_time_check.java:55)
-	at deepfreeze.load_time_check.DF_Dashboard_measureTimes(load_time_check.java:28)
+<td title='deepfreeze.load_time_check.AE_Dashboard_measureTimes()'><b>AE_Dashboard_measureTimes</b><br>Test class: deepfreeze.load_time_check</td>
+<td><div><pre>junit.framework.AssertionFailedError: AE is not installed.
+	at junit.framework.Assert.fail(Assert.java:47)
+	at deepfreeze.load_time_check.AE_Dashboard_measureTimes(load_time_check.java:79)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace23053378", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
-<div class='stack-trace' id='stack-trace23053378'><pre>org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element located by By.xpath: //table[@class=&apos;dx-datagrid-table dx-datagrid-table-fixed&apos;] (tried for 20 second(s) with 500 milliseconds interval)
-Build info: version: &apos;4.34.0&apos;, revision: &apos;707dcb4246*&apos;
-System info: os.name: &apos;Windows 10&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;21.0.7&apos;
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 139.0.7258.139, chrome: {chromedriverVersion: 139.0.7258.154 (9e0d6b2b47f..., userDataDir: C:\Users\admin\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:53390}, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:53390/devtoo..., se:cdpVersion: 139.0.7258.139, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 3e5e32e7980ae0ee65167c0f39aa9d6d
-	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
-	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
-	at deepfreeze.load_time_check.getTableLoadTime(load_time_check.java:55)
-	at deepfreeze.load_time_check.DF_Dashboard_measureTimes(load_time_check.java:28)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace67620673", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace67620673'><pre>junit.framework.AssertionFailedError: AE is not installed.
+	at junit.framework.Assert.fail(Assert.java:47)
+	at deepfreeze.load_time_check.AE_Dashboard_measureTimes(load_time_check.java:79)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
@@ -126,8 +112,8 @@ Session ID: 3e5e32e7980ae0ee65167c0f39aa9d6d
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:293)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:91)
 </pre></div></td>
-<td>22</td>
-<td>deepfreeze.load_time_check@bcec361</td></tr>
+<td>4</td>
+<td>deepfreeze.load_time_check@3bf7ca37</td></tr>
 </table><p>
 <table width='100%' border='1' class='invocation-passed'>
 <tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
@@ -141,7 +127,12 @@ Session ID: 3e5e32e7980ae0ee65167c0f39aa9d6d
 <td title='deepfreeze.df_login.verifyLogin()'><b>verifyLogin</b><br>Test class: deepfreeze.df_login</td>
 <td></td>
 <td>0</td>
-<td>deepfreeze.df_login@3c9754d8</td></tr>
+<td>deepfreeze.df_login@15de0b3c</td></tr>
+<tr>
+<td title='deepfreeze.load_time_check.DF_Dashboard_measureTimes()'><b>DF_Dashboard_measureTimes</b><br>Test class: deepfreeze.load_time_check</td>
+<td></td>
+<td>8</td>
+<td>deepfreeze.load_time_check@3bf7ca37</td></tr>
 </table><p>
 </body>
 </html>

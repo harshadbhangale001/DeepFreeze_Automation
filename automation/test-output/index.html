@@ -92,7 +92,7 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">2 methods, 1 failed,   1 passed</span>
+                    <span class="method-stats">3 methods, 1 failed,   2 passed</span>
                   </li>
                   <li>
                     <span class="method-list-title failed">Failed methods</span>
@@ -103,7 +103,7 @@
                     <div class="method-list-content failed suite-PostGre_SQL_Build_Test">
                       <span>
                         <img src="failed.png" width="3%"/>
-                        <a href="#" panel-name="suite-PostGre_SQL_Build_Test" title="deepfreeze.load_time_check" class="method navigator-link" hash-for-method="DF_Dashboard_measureTimes">DF_Dashboard_measureTimes</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-PostGre_SQL_Build_Test" title="deepfreeze.load_time_check" class="method navigator-link" hash-for-method="AE_Dashboard_measureTimes">AE_Dashboard_measureTimes</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content failed suite-PostGre_SQL_Build_Test -->
@@ -115,6 +115,11 @@
                       <a href="#" panel-name="suite-PostGre_SQL_Build_Test" class="show-methods passed suite-PostGre_SQL_Build_Test"> (show)</a> <!-- show-methods passed suite-PostGre_SQL_Build_Test -->
                     </span>
                     <div class="method-list-content passed suite-PostGre_SQL_Build_Test">
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-PostGre_SQL_Build_Test" title="deepfreeze.load_time_check" class="method navigator-link" hash-for-method="DF_Dashboard_measureTimes">DF_Dashboard_measureTimes</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
                         <a href="#" panel-name="suite-PostGre_SQL_Build_Test" title="deepfreeze.df_login" class="method navigator-link" hash-for-method="verifyLogin">verifyLogin</a> <!-- method navigator-link -->
@@ -140,19 +145,12 @@
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="DF_Dashboard_measureTimes">
-                  </a> <!-- DF_Dashboard_measureTimes -->
-                  <span class="method-name">DF_Dashboard_measureTimes</span>
-                  <div class="stack-trace">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element located by By.xpath: //table[@class=&apos;dx-datagrid-table dx-datagrid-table-fixed&apos;] (tried for 20 second(s) with 500 milliseconds interval)
-Build info: version: &apos;4.34.0&apos;, revision: &apos;707dcb4246*&apos;
-System info: os.name: &apos;Windows 10&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;21.0.7&apos;
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 139.0.7258.139, chrome: {chromedriverVersion: 139.0.7258.154 (9e0d6b2b47f..., userDataDir: C:\Users\admin\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:53390}, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:53390/devtoo..., se:cdpVersion: 139.0.7258.139, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 3e5e32e7980ae0ee65167c0f39aa9d6d
-	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
-	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
-	at deepfreeze.load_time_check.getTableLoadTime(load_time_check.java:55)
-	at deepfreeze.load_time_check.DF_Dashboard_measureTimes(load_time_check.java:28)
+                  <a name="AE_Dashboard_measureTimes">
+                  </a> <!-- AE_Dashboard_measureTimes -->
+                  <span class="method-name">AE_Dashboard_measureTimes</span>
+                  <div class="stack-trace">junit.framework.AssertionFailedError: AE is not installed.
+	at junit.framework.Assert.fail(Assert.java:47)
+	at deepfreeze.load_time_check.AE_Dashboard_measureTimes(load_time_check.java:79)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 ... Removed 25 stack frames
 </div> <!-- stack-trace -->
@@ -160,6 +158,21 @@ Session ID: 3e5e32e7980ae0ee65167c0f39aa9d6d
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
           </div> <!-- suite-PostGre_SQL_Build_Test-class-failed -->
+          <div class="suite-PostGre_SQL_Build_Test-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">deepfreeze.load_time_check</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="DF_Dashboard_measureTimes">
+                  </a> <!-- DF_Dashboard_measureTimes -->
+                  <span class="method-name">DF_Dashboard_measureTimes</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-PostGre_SQL_Build_Test-class-passed -->
           <div class="suite-PostGre_SQL_Build_Test-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
@@ -228,20 +241,24 @@ data.addColumn('number', 'Number');
 data.addColumn('string', 'Method');
 data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
-data.addRows(2);
+data.addRows(3);
 data.setCell(0, 0, 0)
 data.setCell(0, 1, 'DF_Dashboard_measureTimes')
 data.setCell(0, 2, 'deepfreeze.load_time_check')
-data.setCell(0, 3, 22765);
+data.setCell(0, 3, 8232);
 data.setCell(1, 0, 1)
-data.setCell(1, 1, 'verifyLogin')
-data.setCell(1, 2, 'deepfreeze.df_login')
-data.setCell(1, 3, 80);
+data.setCell(1, 1, 'AE_Dashboard_measureTimes')
+data.setCell(1, 2, 'deepfreeze.load_time_check')
+data.setCell(1, 3, 4924);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'verifyLogin')
+data.setCell(2, 2, 'deepfreeze.df_login')
+data.setCell(2, 3, 58);
 window.suiteTableData['PostGre_SQL_Build_Test']= { tableData: data, tableDiv: 'times-div-PostGre_SQL_Build_Test'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 22 seconds</span>
+              <span class="suite-total-time">Total running time: 13 seconds</span>
               <div id="times-div-PostGre_SQL_Build_Test">
               </div> <!-- times-div-PostGre_SQL_Build_Test -->
             </div> <!-- times-div -->
@@ -281,20 +298,24 @@ return data;
               </div> <!-- configuration-suite before -->
               <div class="configuration-class before">
                 <span class="method-name">login</span>
-                <span class="method-start">2052 ms</span>
+                <span class="method-start">2057 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">verifyLogin</span>
-                <span class="method-start">6580 ms</span>
+                <span class="method-start">6785 ms</span>
               </div> <!-- test-method -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">deepfreeze.load_time_check</div> <!-- chronological-class-name -->
               <div class="test-method">
+                <span class="method-name">DF_Dashboard_measureTimes</span>
+                <span class="method-start">6853 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
                 <img src="failed.png">
                 </img>
-                <span class="method-name">DF_Dashboard_measureTimes</span>
-                <span class="method-start">6670 ms</span>
+                <span class="method-name">AE_Dashboard_measureTimes</span>
+                <span class="method-start">15088 ms</span>
               </div> <!-- test-method -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
